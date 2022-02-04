@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class TileInfo : MonoBehaviour
 {
     public int xPosition;
-    public int yPosition;
+    public int zPosition;
 
     bool hasShot;
 
@@ -17,6 +17,12 @@ public class TileInfo : MonoBehaviour
     public void ActivateHighlight(int index )
     {
         sprite.sprite = tileHighLights[index];
+    }
+
+    public void SetTileInfo(int _xPos, int _zPos)
+    {
+        xPosition = _xPos;
+        zPosition = _zPos;
     }
 
     public void OnMouseOver()
