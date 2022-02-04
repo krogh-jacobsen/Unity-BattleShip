@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1641855923463234760}
   - component: {fileID: 1641855923463234764}
   - component: {fileID: 1641855923463234765}
+  - component: {fileID: 2281286852861200090}
   m_Layer: 0
   m_Name: Tile
   m_TagString: Untagged
@@ -124,13 +125,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   xPosition: 0
-  yPosition: 0
+  zPosition: 0
   sprite: {fileID: 1641855923605691731}
   tileHighLights:
   - {fileID: -75123702356235740, guid: ea018f3a146620c4683ab26671dd0213, type: 3}
   - {fileID: 4235315816768159436, guid: ea018f3a146620c4683ab26671dd0213, type: 3}
   - {fileID: 1535591376634443397, guid: ea018f3a146620c4683ab26671dd0213, type: 3}
   - {fileID: 8868021646344480952, guid: ea018f3a146620c4683ab26671dd0213, type: 3}
+--- !u!114 &2281286852861200090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1641855923463234759}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8db0905778e7d95478102726c435e3b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scrollSpeed: 0.5
+  U: 1
+  V: 1
 --- !u!1 &1641855923605691729
 GameObject:
   m_ObjectHideFlags: 0
