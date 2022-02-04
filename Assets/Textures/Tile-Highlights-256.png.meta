@@ -4,16 +4,16 @@ TextureImporter:
   internalIDToNameTable:
   - first:
       213: -75123702356235740
-    second: Tile-Highlights-256_0
+    second: EmptyFrame
   - first:
       213: 4235315816768159436
-    second: Tile-Highlights-256_1
+    second: Crosshair
   - first:
       213: 1535591376634443397
-    second: Tile-Highlights-256_2
+    second: Cross
   - first:
       213: 8868021646344480952
-    second: Tile-Highlights-256_3
+    second: Hit
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -115,7 +115,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Tile-Highlights-256_0
+      name: EmptyFrame
       rect:
         serializedVersion: 2
         x: 0
@@ -123,7 +123,7 @@ TextureImporter:
         width: 255.75
         height: 256
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -136,7 +136,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Tile-Highlights-256_1
+      name: Crosshair
       rect:
         serializedVersion: 2
         x: 255
@@ -144,7 +144,7 @@ TextureImporter:
         width: 255.75
         height: 256
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -157,7 +157,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Tile-Highlights-256_2
+      name: Cross
       rect:
         serializedVersion: 2
         x: 510
@@ -165,7 +165,7 @@ TextureImporter:
         width: 255.75
         height: 256
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -178,7 +178,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Tile-Highlights-256_3
+      name: Hit
       rect:
         serializedVersion: 2
         x: 765
@@ -186,7 +186,7 @@ TextureImporter:
         width: 255.75
         height: 256
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
