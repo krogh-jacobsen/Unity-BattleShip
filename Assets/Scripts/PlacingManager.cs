@@ -23,6 +23,9 @@ public class PlacingManager : MonoBehaviour
     public List<ShipsToPlace> shipList = new List<ShipsToPlace>();
     int currentShip;
 
+    RaycastHit raycastHit;      // called hit in tutorial
+    Vector3 raycastHitPointPosition;    // called hitpoint in tutorial
+
     void Start()
     {
         
@@ -31,6 +34,29 @@ public class PlacingManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(isInPlacingMode)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if(Physics.Raycast(ray, out raycastHit, Mathf.Infinity, layerToCheck))
+            {
+                // Ensure the tile belongs to player and not opponent
+
+            }
+            raycastHitPointPosition = raycastHit.point;
+        }
+
+        // Placing our ship
+        if(Input.GetMouseButtonDown(0) && canPlace)
+        {
+
+        }
+
+        // Rotating our ship
+        if(Input.GetMouseButtonDown(1))
+        {
+
+        }
+
+        // Place ghost
     }
 }
