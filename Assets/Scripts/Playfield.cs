@@ -10,7 +10,14 @@ public class Playfield : MonoBehaviour
 
     List<GameObject> tileList = new List<GameObject>();
 
-    private void OnDrawGizmos()
+    private void Start()
+    {
+        SpawnPlayerField();
+    }
+
+    // private void OnDrawGizmos()
+
+    private void SpawnPlayerField()
     {
         // Defensive prog to avoid duplication
         if(tilePrefab != null && fill)
