@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1641855923463234764}
   - component: {fileID: 1641855923463234765}
   - component: {fileID: 2281286852861200090}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Tile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +157,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1641855923605691730}
   - component: {fileID: 1641855923605691731}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: TileFrameSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}

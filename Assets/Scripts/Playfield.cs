@@ -12,10 +12,13 @@ public class Playfield : MonoBehaviour
 
     private void Start()
     {
-        SpawnPlayerField();
+        //SpawnPlayerField();
     }
 
-    // private void OnDrawGizmos()
+    private void OnDrawGizmos()
+    {
+        SpawnPlayerField();
+    }
 
     private void SpawnPlayerField()
     {

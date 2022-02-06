@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlacingManager : MonoBehaviour
 {
 
-    public bool isInPlacingMode;
+    public bool isInPlacingMode; //canPlace
     bool canPlace;  // Free to place
 
     Playfield playfield;
@@ -22,17 +22,17 @@ public class PlacingManager : MonoBehaviour
     }
 
     public List<ShipsToPlace> shipList = new List<ShipsToPlace>();
-    int currentShip;
+    int currentShip = 3;
 
     RaycastHit raycastHit;      // called hit in tutorial
     Vector3 raycastHitPointPosition;    // called hitpoint in tutorial
 
     void Start()
     {
-        
+        ActivateShipGhost(3);
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
         if(isInPlacingMode)
@@ -57,14 +57,16 @@ public class PlacingManager : MonoBehaviour
         {
 
         }
-
         // Place ghost
+        PlaceGhost();
     }
 
     void ActivateShipGhost(int index)
     {
+        // If our index is negative we want to exit
         if(index != -1)
         {
+            // Check if its already active in the hierachy so we dont duplicate it?
             if(shipList[index].shipGhost.activeInHierarchy)
             {
                 return; 
@@ -91,17 +93,26 @@ public class PlacingManager : MonoBehaviour
         if(isInPlacingMode)
         {
             canPlace = CheckForOtherShips();
+            Vector3 shipGhostPosition = new Vector3(Mathf.Round(raycastHitPointPosition.x), 0, Mathf.Round(raycastHitPointPosition.z));
+            shipList[currentShip].shipGhost.transform.position = shipGhostPosition;
+            Debug.Log(shipGhostPosition);
+        }
+        else
+        {
+            // Deactivate all ghosts
+            ActivateShipGhost(-1);
         }
     }
 
     private bool CheckForOtherShips()
     {
+        // Check for the ghost child cubes 
         foreach (Transform child  in shipList[currentShip].shipGhost.transform)
         {
             GhostBehavior ghost = child.GetComponent<GhostBehavior>();
             if(!ghost.OverTile())
             {
-                // Turn into read
+                // Turn into red
                 child.GetComponent<MeshRenderer>().material.color = new Color32(255, 0, 0, 125);
                 return false;
             }
