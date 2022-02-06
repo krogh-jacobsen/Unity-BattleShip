@@ -149,4 +149,21 @@ public class PlacingManager : MonoBehaviour
 
         // TODO: Check if all ships have been placed
     }
+
+    // Buttons
+    public void PlaceShipButton(int index)
+    {
+        if(CheckIfShipPlaced(index))
+        {
+            print("You have placed enough allready");
+            return;
+        }
+
+        // We can activate ship ghost
+    }
+
+    bool CheckIfShipPlaced(int index)
+    {
+        return shipList[index].placedAmount != shipList[index].amountToPlace;
+    }
 }
