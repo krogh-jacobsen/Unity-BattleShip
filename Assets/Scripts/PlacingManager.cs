@@ -52,7 +52,7 @@ public class PlacingManager : MonoBehaviour
         // Placing our ship
         if(Input.GetMouseButtonDown(0) && canPlace)
         {
-
+            PlaceShip();
         }
 
         // Rotating our ship
@@ -129,5 +129,24 @@ public class PlacingManager : MonoBehaviour
             child.GetComponent<MeshRenderer>().material.color = new Color32(0, 0, 0, 100);
         }
         return true; 
+    }
+
+    void PlaceShip()
+    {
+        
+        // Get the wholenumber position of the mouse click raycast
+        Vector3 position = new Vector3(Mathf.Round(raycastHitPointPosition.x), 0, Mathf.Round(raycastHitPointPosition.z));
+        // Get rotation of current ghost ship
+        Quaternion quaternion = shipList[currentShip].shipGhost.transform.rotation;
+
+        GameObject newShip = Instantiate(shipList[currentShip].shipPrefab, position, quaternion);
+
+        // TODO: Update grid
+
+        // TODO: Deactivate the placing
+
+        // TODO: Deactivate all ghosts
+
+        // TODO: Check if all ships have been placed
     }
 }
