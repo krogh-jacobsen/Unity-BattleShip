@@ -22,14 +22,17 @@ public class PlacingManager : MonoBehaviour
     }
 
     public List<ShipsToPlace> shipList = new List<ShipsToPlace>();
-    int currentShip = 3;
+    int currentShip = 4;
 
     RaycastHit raycastHit;      // called hit in tutorial
     Vector3 raycastHitPointPosition;    // called hitpoint in tutorial
 
     void Start()
     {
-        ActivateShipGhost(3);
+        // Deactivate them all
+        ActivateShipGhost(-1);
+        // Only activate the currentship
+        ActivateShipGhost(currentShip);
     }
 
     
@@ -55,7 +58,7 @@ public class PlacingManager : MonoBehaviour
         // Rotating our ship
         if(Input.GetMouseButtonDown(1))
         {
-
+            RotateShipGhost();
         }
         // Place ghost
         PlaceGhost();
@@ -93,15 +96,21 @@ public class PlacingManager : MonoBehaviour
         if(isInPlacingMode)
         {
             canPlace = CheckForOtherShips();
-            Vector3 shipGhostPosition = new Vector3(Mathf.Round(raycastHitPointPosition.x), 0, Mathf.Round(raycastHitPointPosition.z));
+            Vector3 shipGhostPosition = new Vector3(Mathf.Round(raycastHitPointPosition.x), 0.5f, Mathf.Round(raycastHitPointPosition.z));
             shipList[currentShip].shipGhost.transform.position = shipGhostPosition;
-            Debug.Log(shipGhostPosition);
+            //Debug.Log(shipGhostPosition);
         }
         else
         {
             // Deactivate all ghosts
+            Debug.Log("Deactivate all ghots");
             ActivateShipGhost(-1);
         }
+    }
+
+    void RotateShipGhost()
+    {
+        shipList[currentShip].shipGhost.transform.localEulerAngles += new Vector3(0, 90f, 0);
     }
 
     private bool CheckForOtherShips()
