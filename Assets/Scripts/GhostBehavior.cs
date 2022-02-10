@@ -25,7 +25,7 @@ public class GhostBehavior : MonoBehaviour
         // If this it not null it means we found a tile and so we return true
         if(tileInfo != null) // Lets double check if occupied
         {
-            Debug.Log("We are over a tile");
+            //Debug.Log("We are over a tile");
             return true;
         }
 
@@ -33,7 +33,7 @@ public class GhostBehavior : MonoBehaviour
         tileInfo = null;
 
         // No tile found and so we return false
-        Debug.Log("We are NOT over a tile");
+        //Debug.Log("We are NOT over a tile");
         return false;
     }
 

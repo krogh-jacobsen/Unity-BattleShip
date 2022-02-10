@@ -17,12 +17,12 @@ public class PlacingManager : MonoBehaviour
     {
         public GameObject shipGhost;
         public GameObject shipPrefab;
-        public int amountToPlace = 1;
-        [HideInInspector] public int placedAmount = 0;
+        public int amountToPlace;
+        public int placedAmount = 0;
     }
 
     public List<ShipsToPlace> shipList = new List<ShipsToPlace>();
-    int currentShip = 4;
+    int currentShip = 0;
 
     RaycastHit raycastHit;      // called hit in tutorial
     Vector3 raycastHitPointPosition;    // called hitpoint in tutorial
@@ -32,7 +32,8 @@ public class PlacingManager : MonoBehaviour
         // Deactivate them all
         ActivateShipGhost(-1);
         // Only activate the currentship
-        ActivateShipGhost(currentShip);
+        //ActivateShipGhost(currentShip);
+        isInPlacingMode = false;
     }
 
     
@@ -142,28 +143,45 @@ public class PlacingManager : MonoBehaviour
         GameObject newShip = Instantiate(shipList[currentShip].shipPrefab, position, quaternion);
 
         // TODO: Update grid
+        
+        // Increment the number of ships placed
+        shipList[currentShip].placedAmount++;
 
-        // TODO: Deactivate the placing
+        // Deactivate the placing mode
+        isInPlacingMode = false;
 
-        // TODO: Deactivate all ghosts
+        // Deactivate all ghosts
+        ActivateShipGhost(-1);
 
-        // TODO: Check if all ships have been placed
+        // Check if all ships have been placed
+
     }
 
     // Buttons
     public void PlaceShipButton(int index)
     {
-        if(CheckIfShipPlaced(index))
+        // We need to check if all the ships have been placed first
+        if(CheckIfAllShipsArePlaced(index))
         {
-            print("You have placed enough allready");
+            Debug.Log("You have placed all the ships allready. No more to place");
             return;
         }
+        else
+        {
+            Debug.Log("We still got something left to place");
+        }
 
-        // We can activate ship ghost
+        // We activate ship ghost
+        currentShip = index;
+        ActivateShipGhost(currentShip);
+        // We enter the placing mode
+        isInPlacingMode = true;
     }
 
-    bool CheckIfShipPlaced(int index)
+    // Function  to check if all the ships have been placed
+    bool CheckIfAllShipsArePlaced(int index)
     {
-        return shipList[index].placedAmount != shipList[index].amountToPlace;
+        // If the number of placed ships is equal to the number we placed its true otherwise false
+        return shipList[index].placedAmount >= shipList[index].amountToPlace;
     }
 }
