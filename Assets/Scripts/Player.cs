@@ -32,4 +32,5 @@ public class Player
             }
         }
     }
+    public List<GameObject> placedShipList = new List<GameObject>();
 }

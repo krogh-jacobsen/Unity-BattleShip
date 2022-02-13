@@ -23,7 +23,8 @@ public class GhostBehavior : MonoBehaviour
         tileInfo = GetTileInfo();
 
         // If this it not null it means we found a tile and so we return true
-        if(tileInfo != null) // Lets double check if occupied
+        // Also we want to check its not occupied by another ship
+        if(tileInfo != null && !GameManager.instance.CheckIfOccupied(tileInfo.xPosition, tileInfo.zPosition)) // Lets double check if occupied
         {
             //Debug.Log("We are over a tile");
             return true;
@@ -37,7 +38,7 @@ public class GhostBehavior : MonoBehaviour
         return false;
     }
 
-    private TileInfo GetTileInfo()
+    public TileInfo GetTileInfo()
     {
         // Shot downwards with ray to detect which tile the ghost is on top of
         Ray ray = new Ray(transform.position, -transform.up);

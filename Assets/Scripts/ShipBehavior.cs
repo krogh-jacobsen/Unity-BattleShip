@@ -6,6 +6,7 @@ public class ShipBehavior : MonoBehaviour
 {
     public int shipLength;
     private int numberOfHits;
+    public OccupationType type;
 
     private void Start()
     {
