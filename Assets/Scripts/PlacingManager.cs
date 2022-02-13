@@ -214,7 +214,7 @@ public class PlacingManager : MonoBehaviour
         {
             ship.placedAmount = 0;
         }
-
+        UpdateAmountText();
         // Disable ready button
     }
 }
