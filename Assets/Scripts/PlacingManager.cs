@@ -166,7 +166,6 @@ public class PlacingManager : MonoBehaviour
 
         // Check if all ships have been placed
 
-
     }
 
     // Buttons
@@ -205,5 +204,17 @@ public class PlacingManager : MonoBehaviour
             shipList[i].amountText.text = (shipList[i].amountToPlace - shipList[i].placedAmount).ToString();
         }
 
+    }
+
+    // Function to be clear button
+    public void ClearAllShips()
+    {
+        GameManager.instance.DeleteAllShipsFromList();
+        foreach(var ship in shipList)
+        {
+            ship.placedAmount = 0;
+        }
+
+        // Disable ready button
     }
 }

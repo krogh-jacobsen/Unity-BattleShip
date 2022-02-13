@@ -93,4 +93,29 @@ public class GameManager : MonoBehaviour
         print(seperatChars);
     }
 
+    public void DeleteAllShipsFromList()
+    {
+        foreach(GameObject ship in players[activePlayer].placedShipList)
+        {
+            Destroy(ship);
+        }
+        players[activePlayer].placedShipList.Clear();
+
+        // Reinit the grid
+        InitializeGrid();
+    }
+
+    void InitializeGrid()
+    {
+        // Initializing all our tiles
+        for (int x = 0; x < 10; x++)
+        {
+            for (int y = 0; y < 10; y++)
+            {
+                OccupationType occupationType = OccupationType.Empty;
+                players[activePlayer].myGrid[x, y] = new Tile(occupationType, null);
+                players[activePlayer].revealedGrid[x, y] = false;
+            }
+        }
+    }
 }
