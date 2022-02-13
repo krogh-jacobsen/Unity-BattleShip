@@ -104,7 +104,7 @@ public class PlacingManager : MonoBehaviour
         else
         {
             // Deactivate all ghosts
-            Debug.Log("Deactivate all ghots");
+            //Debug.Log("Deactivate all ghots");
             ActivateShipGhost(-1);
         }
     }
@@ -142,7 +142,8 @@ public class PlacingManager : MonoBehaviour
 
         GameObject newShip = Instantiate(shipList[currentShip].shipPrefab, position, quaternion);
 
-        // TODO: Update grid
+        // Updating grid
+        GameManager.instance.UpdateGrid(shipList[currentShip].shipGhost.transform, newShip.GetComponent<ShipBehavior>(), newShip);
         
         // Increment the number of ships placed
         shipList[currentShip].placedAmount++;
@@ -184,4 +185,5 @@ public class PlacingManager : MonoBehaviour
         // If the number of placed ships is equal to the number we placed its true otherwise false
         return shipList[index].placedAmount >= shipList[index].amountToPlace;
     }
+
 }
