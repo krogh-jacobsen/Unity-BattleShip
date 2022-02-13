@@ -22,5 +22,6 @@ public class GameManager : MonoBehaviour
     //    public PlayerType playerType;
     //}
 
+    int activePlayer;
     public Player[] players = new Player[2];
 }
