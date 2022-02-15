@@ -10,9 +10,35 @@ public class Playfield : MonoBehaviour
 
     List<GameObject> tileList = new List<GameObject>();
 
+    List<TileInfo> tileInfoList = new List<TileInfo>();
+
+
     private void Start()
     {
-        //SpawnPlayerField();
+        // Ensure we start fresh by removing old data
+        tileList.Clear();
+        tileInfoList.Clear();
+
+        foreach (Transform tileTransform in transform)
+        {
+            if(tileTransform != transform)
+            {
+                tileList.Add(tileTransform.gameObject);
+            }
+        }
+
+        // Fill the tile infos
+        foreach (GameObject tileGameObject in tileList)
+        {
+            tileInfoList.Add(tileGameObject.GetComponent<TileInfo>());
+        }
+
+    }
+
+    public bool RequestTile(TileInfo _tileInfo)
+    {
+        // Will return either true or false 
+        return tileInfoList.Contains(_tileInfo);
     }
 
     private void OnDrawGizmos()
