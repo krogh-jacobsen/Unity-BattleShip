@@ -22,7 +22,16 @@ public class GameManager : MonoBehaviour
     //    public PlayerType playerType;
     //}
 
-
+    // State machines
+    public enum GameStates
+    {
+        P1_Place_Ships,
+        P2_Place_Ships,
+        Shooting,
+        Idle
+    }
+    public GameStates gameState;
+    public GameObject battleCamPosition;
 
     int activePlayer;
     public Player[] players = new Player[2];
@@ -32,6 +41,61 @@ public class GameManager : MonoBehaviour
         players[activePlayer].placedShipList.Add(placedShip);
     }
 
+    private void Start()
+    {
+        // Hide all panels
+        HideAllPanels();
+
+        // Active place the panel from the first player
+        players[activePlayer].placePanel.SetActive(true);
+        gameState = GameStates.Idle;
+
+        // Move the camera to the field
+    }
+
+
+    //------------------------------
+    // Preparing a Battle
+    //------------------------------
+
+    private void Update()
+    {
+        switch (gameState)
+        {
+            case GameStates.P1_Place_Ships:
+                {
+                    // Deactivate Panel
+
+                    // Call the placing Manager
+                    PlacingManager.instance.SetPlayFieldForPlayer(players[activePlayer].playfield, players[activePlayer].playerType.ToString());
+                    gameState = GameStates.Idle;
+                }
+                break;
+            case GameStates.P2_Place_Ships:
+                {
+                    PlacingManager.instance.SetPlayFieldForPlayer(players[activePlayer].playfield, players[activePlayer].playerType.ToString());
+                    gameState = GameStates.Idle;
+                }
+                break;
+            case GameStates.Shooting:
+                {
+                    // Battlemode
+                    if(players[activePlayer].playerType == Player.PlayerType.NPC)
+                    {
+                        // NPC turn
+                    }
+
+                }
+                break;
+            case GameStates.Idle:
+                {
+                    // Waiting here
+
+                }
+                break;
+        }
+
+    }
     public void UpdateGrid(Transform shipTransform, ShipBehavior shipBehavior, GameObject placedShip)
     {
         //
@@ -118,4 +182,14 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+    void HideAllPanels()
+    {
+        players[0].placePanel.SetActive(false);
+        players[0].shootPanel.SetActive(false);
+
+        players[1].placePanel.SetActive(false);
+        players[1].shootPanel.SetActive(false);
+    }
+
 }

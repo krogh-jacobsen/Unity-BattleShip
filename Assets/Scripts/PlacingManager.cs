@@ -7,12 +7,15 @@ using TMPro;
 
 public class PlacingManager : MonoBehaviour
 {
-
+    // TODO: Refactor the singleton here
+    public static PlacingManager instance;
+    
     public bool isInPlacingMode; //canPlace
     bool canPlace;  // Free to place
 
     Playfield playfield;
     public LayerMask layerToCheck;
+
 
     [System.Serializable]
     public class ShipsToPlace
@@ -25,11 +28,18 @@ public class PlacingManager : MonoBehaviour
 
     }
 
+    public Button readyButton;
+
     public List<ShipsToPlace> shipList = new List<ShipsToPlace>();
     int currentShip = 0;
         
     RaycastHit raycastHit;      // called hit in tutorial
     Vector3 raycastHitPointPosition;    // called hitpoint in tutorial
+
+    private void Awake()
+    {
+        instance = this;   
+    }
 
     void Start()
     {
@@ -41,6 +51,22 @@ public class PlacingManager : MonoBehaviour
         isInPlacingMode = false;
     }
 
+    public void SetPlayFieldForPlayer(Playfield _playfield, string playerType)
+    {
+        playfield = _playfield;
+        // Initialize the readybutton
+        readyButton.interactable = false;
+
+        ClearAllShips();
+
+        // NPC
+        if(playerType == "NPC")
+        {
+            // Auto placement for CPU
+
+            // Update Game Manager that the turn is complete
+        }
+    }
     
     void Update()
     {
@@ -50,6 +76,11 @@ public class PlacingManager : MonoBehaviour
             if(Physics.Raycast(ray, out raycastHit, Mathf.Infinity, layerToCheck))
             {
                 // Ensure the tile belongs to player and not opponent
+                if(!playfield.RequestTile(raycastHit.collider.GetComponent<TileInfo>()))
+                {
+                    // Return to restrict us from not being able to place or rotate our ship
+                    return;
+                }
 
             }
             raycastHitPointPosition = raycastHit.point;
@@ -165,9 +196,11 @@ public class PlacingManager : MonoBehaviour
         UpdateAmountText();
 
         // Check if all ships have been placed
+        CheckIfAllShipsArePlaced();
 
     }
 
+    #region buttons
     // Buttons
     public void PlaceShipButton(int index)
     {
@@ -189,11 +222,26 @@ public class PlacingManager : MonoBehaviour
         isInPlacingMode = true;
     }
 
-    // Function  to check if all the ships have been placed
+    // Function  to check if that specific shiptype have been placed
     bool CheckIfAllShipsArePlaced(int index)
     {
         // If the number of placed ships is equal to the number we placed its true otherwise false
         return shipList[index].placedAmount >= shipList[index].amountToPlace;
+    }
+
+    // Function  to check if ALL the ships have been placed
+    bool CheckIfAllShipsArePlaced() 
+    {
+        foreach (var ship in shipList)
+        {
+            // check if we placed the correct number of ships
+            if(ship.placedAmount != ship.amountToPlace)
+            {
+                return false;
+            }
+        }
+        readyButton.interactable = true;
+        return true;
     }
 
     void UpdateAmountText()
@@ -217,4 +265,6 @@ public class PlacingManager : MonoBehaviour
         UpdateAmountText();
         // Disable ready button
     }
+    
+    #endregion
 }

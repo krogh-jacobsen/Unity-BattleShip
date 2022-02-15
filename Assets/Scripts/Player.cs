@@ -16,6 +16,11 @@ public class Player
     public Playfield playfield;
     public LayerMask layerMaskToPlaceOn;
 
+    [Header("Misc")]
+    public GameObject placePanel;
+    public GameObject shootPanel;
+    public GameObject camPosition;
+
     // Panels to show and hide ships
 
     // Constructor
