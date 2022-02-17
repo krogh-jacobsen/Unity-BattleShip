@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,8 +33,10 @@ public class GameManager : MonoBehaviour
     }
     public GameStates gameState;
     public GameObject battleCamPosition;
+    public bool cameraIsMoving;
+    public GameObject placingCanvas;
+    public int activePlayer;
 
-    int activePlayer;
     public Player[] players = new Player[2];
 
     private void AddShipToList(GameObject placedShip)
@@ -65,14 +68,18 @@ public class GameManager : MonoBehaviour
             case GameStates.P1_Place_Ships:
                 {
                     // Deactivate Panel
-
+                    players[activePlayer].placePanel.SetActive(false);
                     // Call the placing Manager
                     PlacingManager.instance.SetPlayFieldForPlayer(players[activePlayer].playfield, players[activePlayer].playerType.ToString());
+                    StartCoroutine(MoveCamera(players[activePlayer].camPosition));
                     gameState = GameStates.Idle;
                 }
                 break;
             case GameStates.P2_Place_Ships:
                 {
+                    // Deactivate Panel
+                    players[activePlayer].placePanel.SetActive(false);
+
                     PlacingManager.instance.SetPlayFieldForPlayer(players[activePlayer].playfield, players[activePlayer].playerType.ToString());
                     gameState = GameStates.Idle;
                 }
@@ -190,6 +197,117 @@ public class GameManager : MonoBehaviour
 
         players[1].placePanel.SetActive(false);
         players[1].shootPanel.SetActive(false);
+    }
+
+    // Place panel button P1
+    public void P1PlaceShips()
+    {
+        gameState = GameStates.P1_Place_Ships;
+    }
+    // Place panel button P2
+    public void P2PlaceShips()
+    {
+        gameState = GameStates.P2_Place_Ships;
+    }
+
+    // Ready button
+    public void PlacingReady()
+    {
+        if(activePlayer == 0)
+        {
+            // Hide my ships
+            HideAllMyShips();
+
+            // Switch to the 2nd player
+            SwitchPlayer();
+
+            // Move the camera 2nd player
+            StartCoroutine(MoveCamera(players[activePlayer].camPosition));
+            //StartCoroutine(MoveCamera(players[1].camPosition));
+
+            // Activate placing panel p2
+            players[activePlayer].placePanel.SetActive(true);
+
+            // Return
+            return;
+        }
+
+        if (activePlayer == 1)
+        {
+            // Hide my ships
+            HideAllMyShips();
+
+            // Switch to the 1st player
+            SwitchPlayer();
+
+            // Move the camera to player 1
+            //StartCoroutine(MoveCamera(players[activePlayer].camPosition));
+            StartCoroutine(MoveCamera(battleCamPosition));
+
+            // Activate shot panel p1
+            players[activePlayer].shootPanel.SetActive(true);
+
+            // Unhide Player 1 ships 
+            UnHideAllMyShips();
+
+            // Deactivate placing canvas
+            placingCanvas.SetActive(false);
+
+            // Game starts
+            
+        }
+    }
+
+    private void UnHideAllMyShips()
+    {
+        foreach (var ship in players[activePlayer].placedShipList)
+        {
+            ship.GetComponent<MeshRenderer>().enabled = true;
+        }
+    }
+
+    void HideAllMyShips()
+    {
+        foreach(var ship in players[activePlayer].placedShipList)
+        {
+            ship.GetComponent<MeshRenderer>().enabled = false;
+        }
+    }
+
+    void SwitchPlayer()
+    {
+        activePlayer++;
+        
+        // When ever activeplayer reach 2 it resets to zero
+        activePlayer %= 2;
+    }
+
+    IEnumerator MoveCamera(GameObject cameraGameObject)
+    {
+        if(cameraIsMoving)
+        {
+            yield break;
+        }
+
+        float currentTime = 0;
+        float duration = 0.5f;
+
+        Vector3 startPosition = Camera.main.transform.position;
+        Quaternion startRotation = Camera.main.transform.rotation;
+
+        Vector3 toPosition = cameraGameObject.transform.position;
+        Quaternion toRotation = cameraGameObject.transform.rotation;
+
+        while(currentTime < duration)
+        {
+            currentTime += Time.deltaTime;
+            // We use lerp to move smoothly between the points
+            Camera.main.transform.position = Vector3.Lerp(startPosition, toPosition, currentTime / duration);
+            Camera.main.transform.rotation = Quaternion.Lerp(startRotation, toRotation, currentTime / duration);
+            yield return null;
+        }
+
+        cameraIsMoving = true;
     }
 
 }
