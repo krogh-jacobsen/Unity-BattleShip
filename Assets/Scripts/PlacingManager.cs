@@ -318,6 +318,8 @@ public class PlacingManager : MonoBehaviour
                     int randomXPosition = UnityEngine.Random.Range(0, 10);
                     int randomZPosition = UnityEngine.Random.Range(0, 10);
 
+                    Debug.Log("Random position: " + randomXPosition + "|" + randomZPosition);
+
                     // Create a ghost
                     GameObject temporaryGhost = Instantiate(shipList[currentShipType].shipGhost);
                     temporaryGhost.SetActive(true);

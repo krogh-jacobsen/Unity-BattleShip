@@ -28,17 +28,19 @@ public class ShipBehavior : MonoBehaviour
         return numberOfHits < shipLength && numberOfHits > 0;
     }
 
-    public void TakeDamage()
+    public bool TakeDamage()
     {
         numberOfHits--;
         if(IsSunk())
         {
             // Report the ship is sunk to the GameManager
 
-            // Meshrenderer
 
-
+            // Meshrenderer unhide the ship
+            GetComponent<MeshRenderer>().enabled = true;
+            return true;
         }
+        return false;
     }
      
 }

@@ -6,12 +6,6 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-
-    private void Awake()
-    {
-        instance = this;
-    }
-
     //[System.Serializable]
     //public class Player
     //{
@@ -22,6 +16,9 @@ public class GameManager : MonoBehaviour
     //    }
     //    public PlayerType playerType;
     //}
+    public int activePlayer;
+
+    public Player[] players = new Player[2];
 
     // State machines
     public enum GameStates
@@ -35,13 +32,13 @@ public class GameManager : MonoBehaviour
     public GameObject battleCamPosition;
     public bool cameraIsMoving;
     public GameObject placingCanvas;
-    public int activePlayer;
 
-    public Player[] players = new Player[2];
+    bool isShooting;    // Protect for coroutine
 
-    private void AddShipToList(GameObject placedShip)
+
+    private void Awake()
     {
-        players[activePlayer].placedShipList.Add(placedShip);
+        instance = this;
     }
 
     private void Start()
@@ -103,6 +100,12 @@ public class GameManager : MonoBehaviour
         }
 
     }
+
+    private void AddShipToList(GameObject placedShip)
+    {
+        players[activePlayer].placedShipList.Add(placedShip);
+    }
+
     public void UpdateGrid(Transform shipTransform, ShipBehavior shipBehavior, GameObject placedShip)
     {
         //
@@ -338,28 +341,48 @@ public class GameManager : MonoBehaviour
         return opponent;
     }
 
-    public void CheckCoordinate(int x, int z, TileInfo tileInfo)
+    public void CheckShot(int x, int z, TileInfo tileInfo)
     {
+        StartCoroutine(CheckCoordinate(x, z, tileInfo));
+    }
+
+    IEnumerator CheckCoordinate(int x, int z, TileInfo tileInfo)
+    {
+        if (isShooting)
+        {
+            yield break;
+        }
+        isShooting = true;
+
         int opponent = ReturnOpponent();
 
         // If tile is not opponent tile
         if(!players[opponent].playfield.RequestTile(tileInfo))
         {
             print("Dont shot your own tiles");
-            return;
+            isShooting = false;
+            yield break;
         }
 
         // If shot this coordinate already
         if (players[opponent].revealedGrid[x,z] == true)
         {
             print("You have shot here already");
-            return;
+            isShooting = false;
+            yield break;
         }
 
         // If this is occupied
         if(players[opponent].myGrid[x,z].IsOccupiedByShip())
         {
             // Do damage to ship
+            bool sunk = players[opponent].myGrid[x, z].placedShipBehavior.TakeDamage();
+
+            if(sunk)
+            {
+                // Remove the sunken ship from the list of remaining fleet
+                players[opponent].placedShipList.Remove(players[opponent].myGrid[x, z].placedShipBehavior.gameObject);
+            }
 
             // Highlight the title different
             tileInfo.ActivateHighlight(3, true);
@@ -373,6 +396,13 @@ public class GameManager : MonoBehaviour
         // Reveal tile
         players[opponent].revealedGrid[x, z] = true;
 
+        // Check for win condition (if there are no one left we have won)
+        if(players[opponent].placedShipList.Count == 0)
+        {
+            print("You win");
+            // Win logic
+        }
+
         // Hide my ships
 
         // Switch player
@@ -380,5 +410,10 @@ public class GameManager : MonoBehaviour
         // Activate the correct panel
 
         // Gamestate to idle
+
+
+        // Set flag 
+        isShooting = false;
     }
+
 }

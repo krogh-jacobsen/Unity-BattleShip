@@ -41,7 +41,7 @@ public class TileInfo : MonoBehaviour
             if(Input.GetMouseButtonDown(0))
             {
                 // Game manager to check this coordinate
-                GameManager.instance.CheckCoordinate(xPosition, zPosition, this);
+                GameManager.instance.CheckShot(xPosition, zPosition, this);
             }
         }
     }
