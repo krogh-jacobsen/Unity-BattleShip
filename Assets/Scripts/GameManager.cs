@@ -241,14 +241,11 @@ public class GameManager : MonoBehaviour
             SwitchPlayer();
 
             // Move the camera to player 1
-            //StartCoroutine(MoveCamera(players[activePlayer].camPosition));
-            StartCoroutine(MoveCamera(battleCamPosition));
+            StartCoroutine(MoveCamera(players[activePlayer].camPosition));
+            //StartCoroutine(MoveCamera(battleCamPosition));
 
             // Activate shot panel p1
             players[activePlayer].shootPanel.SetActive(true);
-
-            // Unhide Player 1 ships 
-            UnHideAllMyShips();
 
             // Deactivate placing canvas
             placingCanvas.SetActive(false);
@@ -313,4 +310,75 @@ public class GameManager : MonoBehaviour
         cameraIsMoving = false;
     }
 
+    //------------------------------
+    // Battle mode
+    //------------------------------
+
+
+    // Shoot panel button
+    public void ShotButtonPressed()
+    {
+        // Make oyr own ships visible
+        UnHideAllMyShips();
+        // Update UI
+        players[activePlayer].shootPanel.SetActive(false);
+        // Change game state
+        gameState = GameStates.Shooting;
+    }
+
+    // TODO: Rename function to something more appropiate
+    int ReturnOpponent()
+    {
+        // TODO: Refactor this ugly asss code
+        // Start by defining who I am
+        int me = activePlayer;
+        me++;
+        me %= 2;
+        int opponent = me;
+        return opponent;
+    }
+
+    public void CheckCoordinate(int x, int z, TileInfo tileInfo)
+    {
+        int opponent = ReturnOpponent();
+
+        // If tile is not opponent tile
+        if(!players[opponent].playfield.RequestTile(tileInfo))
+        {
+            print("Dont shot your own tiles");
+            return;
+        }
+
+        // If shot this coordinate already
+        if (players[opponent].revealedGrid[x,z] == true)
+        {
+            print("You have shot here already");
+            return;
+        }
+
+        // If this is occupied
+        if(players[opponent].myGrid[x,z].IsOccupiedByShip())
+        {
+            // Do damage to ship
+
+            // Highlight the title different
+            tileInfo.ActivateHighlight(3, true);
+        }
+        else
+        {
+            // Not hit a ship
+            tileInfo.ActivateHighlight(2, true);
+        }
+        
+        // Reveal tile
+        players[opponent].revealedGrid[x, z] = true;
+
+        // Hide my ships
+
+        // Switch player
+
+        // Activate the correct panel
+
+        // Gamestate to idle
+    }
 }
