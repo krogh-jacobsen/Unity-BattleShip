@@ -1,0 +1,24 @@
+fileFormatVersion: 2
+guid: 7f13f68417d4afc4cae611dd3f0b06e5
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Battle Star
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 7201baec8417dc24ab2f0ffb5c8fbc76, type: 3}
+  - {fileID: 12800000, guid: 0e2a51d2895569d4aa9a6510633e2fdd, type: 3}
+  - {fileID: 12800000, guid: 5a483dec328cec640974b343b7da3e7d, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
