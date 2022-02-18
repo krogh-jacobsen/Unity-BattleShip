@@ -31,7 +31,7 @@ public class PlacingManager : MonoBehaviour
     public Button readyButton;
 
     public List<ShipsToPlace> shipList = new List<ShipsToPlace>();
-    int currentShip = 0;
+    int currentShipType = 0;
         
     RaycastHit raycastHit;      // called hit in tutorial
     Vector3 raycastHitPointPosition;    // called hitpoint in tutorial
@@ -134,7 +134,7 @@ public class PlacingManager : MonoBehaviour
         {
             canPlace = CheckForOtherShips();
             Vector3 shipGhostPosition = new Vector3(Mathf.Round(raycastHitPointPosition.x), 0.5f, Mathf.Round(raycastHitPointPosition.z));
-            shipList[currentShip].shipGhost.transform.position = shipGhostPosition;
+            shipList[currentShipType].shipGhost.transform.position = shipGhostPosition;
             //Debug.Log(shipGhostPosition);
         }
         else
@@ -147,13 +147,13 @@ public class PlacingManager : MonoBehaviour
 
     void RotateShipGhost()
     {
-        shipList[currentShip].shipGhost.transform.localEulerAngles += new Vector3(0, 90f, 0);
+        shipList[currentShipType].shipGhost.transform.localEulerAngles += new Vector3(0, 90f, 0);
     }
 
     private bool CheckForOtherShips()
     {
         // Check for the ghost child cubes 
-        foreach (Transform child  in shipList[currentShip].shipGhost.transform)
+        foreach (Transform child  in shipList[currentShipType].shipGhost.transform)
         {
             GhostBehavior ghost = child.GetComponent<GhostBehavior>();
             if(!ghost.OverTile())
@@ -167,6 +167,21 @@ public class PlacingManager : MonoBehaviour
         }
         return true; 
     }
+    // Overloading method where we dont need to do anything but check its valid
+    private bool CheckForOtherShips(Transform transform)
+    {
+        // Check for the ghost child cubes 
+        foreach (Transform child in transform)
+        {
+            GhostBehavior ghost = child.GetComponent<GhostBehavior>();
+            if (!ghost.OverTile())
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     void PlaceShip()
     {
@@ -175,16 +190,16 @@ public class PlacingManager : MonoBehaviour
             // Get the wholenumber position of the mouse click raycast
             Vector3 position = new Vector3(Mathf.Round(raycastHitPointPosition.x), 0, Mathf.Round(raycastHitPointPosition.z));
             // Get rotation of current ghost ship
-            Quaternion quaternion = shipList[currentShip].shipGhost.transform.rotation;
+            Quaternion quaternion = shipList[currentShipType].shipGhost.transform.rotation;
 
-            GameObject newShip = Instantiate(shipList[currentShip].shipPrefab, position, quaternion);
+            GameObject newShip = Instantiate(shipList[currentShipType].shipPrefab, position, quaternion);
             Debug.Log("Placing ship");
 
             // Updating grid
-            GameManager.instance.UpdateGrid(shipList[currentShip].shipGhost.transform, newShip.GetComponent<ShipBehavior>(), newShip);
+            GameManager.instance.UpdateGrid(shipList[currentShipType].shipGhost.transform, newShip.GetComponent<ShipBehavior>(), newShip);
         
             // Increment the number of ships placed
-            shipList[currentShip].placedAmount++;
+            shipList[currentShipType].placedAmount++;
         }
         // Deactivate the placing mode
         isInPlacingMode = false;
@@ -216,8 +231,8 @@ public class PlacingManager : MonoBehaviour
         }
 
         // We activate ship ghost
-        currentShip = index;
-        ActivateShipGhost(currentShip);
+        currentShipType = index;
+        ActivateShipGhost(currentShipType);
         // We enter the placing mode
         isInPlacingMode = true;
     }
@@ -264,7 +279,109 @@ public class PlacingManager : MonoBehaviour
         }
         UpdateAmountText();
         // Disable ready button
+        readyButton.interactable = false;
+    }
+
+    public void AutoPlaceShips()
+    {
+        // Clear all ships first
+        ClearAllShips();
+
+        // Creating a flag for our loop
+        bool positionFound = false;
+
+        // Loop through all the ships
+        for (int i = 0; i < shipList.Count; i++)
+        {
+            // Loop thorugh every shipamount for each type to place
+            for (int j = 0; j < shipList[i].amountToPlace; j++)
+            {
+                // To avoid the situation where we dont have any left
+                if(shipList[i].amountToPlace <= 0)
+                {
+                    Debug.LogError("There is no or negative shipamount in the placing manager");
+                    return;
+                }
+                positionFound = false;
+                // Defensive code stopper
+                int defensiveCount = 0;
+
+                // While no position fond
+                while (!positionFound || defensiveCount > 1000)
+                {
+                    defensiveCount++;
+
+                    // Stay here until we find a suitable position
+                    currentShipType = i;
+
+                    // Pick a random position
+                    int randomXPosition = UnityEngine.Random.Range(0, 10);
+                    int randomZPosition = UnityEngine.Random.Range(0, 10);
+
+                    // Create a ghost
+                    GameObject temporaryGhost = Instantiate(shipList[currentShipType].shipGhost);
+                    temporaryGhost.SetActive(true);
+
+                    // Set Ghost playfield
+
+                    // Set position of ghost
+                    temporaryGhost.transform.position = new Vector3(
+                        playfield.transform.position.x + randomXPosition,
+                        0, 
+                        playfield.transform.position.z + randomZPosition);
+
+                    // We define the 4 potential/acceptable rotations.
+                    Vector3[] possibleRotations = { 
+                        new Vector3(0, 0, 0), 
+                        new Vector3(0, 90, 0), 
+                        new Vector3(0, 180, 0), 
+                        new Vector3(0, 270, 9) };
+
+
+                    // Check for all rotations
+                    for (int rotationOption = 0; rotationOption < possibleRotations.Length; rotationOption++)
+                    {
+                        List<int> indexList = new List<int> { 0, 1, 2, 3 };
+                        int randomRotation = indexList[UnityEngine.Random.Range(0, indexList.Count)];
+
+                        // Rotate
+                        temporaryGhost.transform.rotation = Quaternion.Euler(possibleRotations[randomRotation]);
+                        
+                        // Check the location works or is overlapping
+                        if(CheckForOtherShips(temporaryGhost.transform))
+                        {
+                            PlaceAutoShip(temporaryGhost);
+                            positionFound = true;
+                        }
+                        // No position from all posibble locations
+                        else
+                        {
+                            Destroy(temporaryGhost);
+                            indexList.Remove(rotationOption);
+                        }
+                    }
+
+                }
+
+            }
+        }
+        // readyButton.interactable = true;
+        CheckIfAllShipsArePlaced();
+        
     }
     
+
+    public void PlaceAutoShip(GameObject temporayGO)
+    {
+        GameObject newShip = Instantiate(shipList[currentShipType].shipPrefab, temporayGO.transform.position, temporayGO.transform.rotation);
+        GameManager.instance.UpdateGrid(temporayGO.transform, newShip.GetComponent<ShipBehavior>(), newShip);
+        shipList[currentShipType].placedAmount++;
+
+        // remove the temporary go
+        Destroy(temporayGO);
+        // Update UI
+        UpdateAmountText();
+    }
+
     #endregion
 }

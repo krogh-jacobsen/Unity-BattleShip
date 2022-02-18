@@ -284,10 +284,13 @@ public class GameManager : MonoBehaviour
 
     IEnumerator MoveCamera(GameObject cameraGameObject)
     {
+        // Break out if the camera is already moving
         if(cameraIsMoving)
         {
             yield break;
         }
+        // TODO: This could use some refactoring
+        cameraIsMoving = true;
 
         float currentTime = 0;
         float duration = 0.5f;
@@ -307,7 +310,7 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
 
-        cameraIsMoving = true;
+        cameraIsMoving = false;
     }
 
 }
