@@ -88,6 +88,9 @@ public class GameManager : MonoBehaviour
                     {
                         // NPC turn
                     }
+                    // Move camera to battle mode
+                    StartCoroutine(MoveCamera(battleCamPosition));
+
 
                 }
                 break;

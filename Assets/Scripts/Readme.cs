@@ -6,7 +6,8 @@ public class Readme
      * 
      * 
      * 
-     * 
+     * Gameplay ideas:
+     * Maybe you want to introduce a Timer so a player has to act in max 20 seconds or his turn gets skipped.
      * 
      * 
      * 
