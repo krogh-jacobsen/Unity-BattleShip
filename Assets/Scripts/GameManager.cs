@@ -34,7 +34,9 @@ public class GameManager : MonoBehaviour
     public GameObject placingCanvas;
 
     bool isShooting;    // Protect for coroutine
-
+    public GameObject rocketPrefab;
+    float rocketAmplitude = 3f;
+    float currentLerpTime;
 
     private void Awake()
     {
@@ -375,8 +377,27 @@ public class GameManager : MonoBehaviour
             yield break;
         }
 
+        // Shoot rocket
+        Vector3 startPositionRocket = Vector3.zero;
+        Vector3 targetDestination = tileInfo.gameObject.transform.position;
+
+        // instantiate the rocket
+        GameObject rocket = Instantiate(rocketPrefab, startPositionRocket, Quaternion.identity);
+
+        // Send the rocket towards target
+        while(MoveInArcToTile(startPositionRocket, targetDestination, 0.5f, rocket)) 
+        {
+            yield return null;
+        }
+
+        // We remove it when we are done with it
+        Destroy(rocket);
+
+        // We reset the timer
+        currentLerpTime = 0;
+
         // If this is occupied
-        if(players[opponent].myGrid[x,z].IsOccupiedByShip())
+        if (players[opponent].myGrid[x,z].IsOccupiedByShip())
         {
             // Do damage to ship
             bool sunk = players[opponent].myGrid[x, z].placedShipBehavior.TakeDamage();
@@ -417,6 +438,21 @@ public class GameManager : MonoBehaviour
 
         // Set flag 
         isShooting = false;
+    }
+
+    // TODO: Move this out to seperate rocket class
+    bool MoveInArcToTile(Vector3 startPosition, Vector3 targetPosition, float speed, GameObject rocket)
+    {
+        currentLerpTime += speed * Time.deltaTime;
+        Vector3 myPosition = Vector3.Lerp(startPosition, targetPosition, currentLerpTime);
+        
+        // Move in sinus wave like curve
+        myPosition.y = rocketAmplitude * Mathf.Sin(Mathf.Clamp01(currentLerpTime) * (float)Math.PI);
+        // Ensure the point of the rocket is always facing forward
+        rocket.transform.LookAt(myPosition);
+        
+        // If the target position matches where the rockets position
+        return targetPosition != (rocket.transform.position = Vector3.Lerp(rocket.transform.position, myPosition, currentLerpTime));
     }
 
 }
