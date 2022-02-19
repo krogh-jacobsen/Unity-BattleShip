@@ -14,7 +14,6 @@ public class Player
     public Tile[,] myGrid = new Tile[10, 10];
     public bool[,] revealedGrid = new bool[10,10];
     public Playfield playfield;
-    public LayerMask layerMaskToPlaceOn;
 
     [Header("Misc")]
     public GameObject placePanel;

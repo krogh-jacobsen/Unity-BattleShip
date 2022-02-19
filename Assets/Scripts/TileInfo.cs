@@ -20,6 +20,15 @@ public class TileInfo : MonoBehaviour
         sprite.sprite = tileHighLights[index];
 
         // Color the sprite
+        if(index == 2)
+        {
+            sprite.color = Color.blue;
+        }
+        // Hit ship (red)
+        if (index == 3)
+        {
+            sprite.color = Color.red;
+        }
 
         hasBeenShot = _hasBeenShot;
     }

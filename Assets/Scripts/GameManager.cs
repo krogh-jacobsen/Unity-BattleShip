@@ -132,11 +132,11 @@ public class GameManager : MonoBehaviour
     // TODO: fix the debugging log
     void DebugGrid()
     {
-        string seperatChars = "";
+        string seperatorChar = "";
         int seperatorCount = 0;
         for (int x = 0; x < 10; x++)
         {
-            seperatChars += "|";
+            seperatorChar += "|";
             for (int z = 0; z < 10; z++)
             {
                 string occupationTypeSymbol = "+";
@@ -160,16 +160,16 @@ public class GameManager : MonoBehaviour
                 {
                     occupationTypeSymbol = "R";
                 }
-                seperatChars += occupationTypeSymbol;
+                seperatorChar += occupationTypeSymbol;
                 seperatorCount = z % 10;
                 if(seperatorCount == 9)
                 {
-                    seperatChars += "|";
+                    seperatorChar += "|";
                 }
             }
-            seperatChars += "\n";
+            seperatorChar += "\n";
         }
-        print(seperatChars);
+        print(seperatorChar);
     }
 
     public void DeleteAllShipsFromList()
