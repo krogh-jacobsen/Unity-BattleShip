@@ -92,18 +92,14 @@ public class GameManager : MonoBehaviour
                     }
                     // Move camera to battle mode
                     StartCoroutine(MoveCamera(battleCamPosition));
-
-
                 }
                 break;
             case GameStates.Idle:
                 {
                     // Waiting here
-
                 }
                 break;
         }
-
     }
 
     private void AddShipToList(GameObject placedShip)
@@ -113,7 +109,6 @@ public class GameManager : MonoBehaviour
 
     public void UpdateGrid(Transform shipTransform, ShipBehavior shipBehavior, GameObject placedShip)
     {
-        //
         foreach(Transform child in shipTransform)
         {
             TileInfo tileInfo = child.GetComponent<GhostBehavior>().GetTileInfo();
@@ -129,7 +124,7 @@ public class GameManager : MonoBehaviour
         return players[activePlayer].myGrid[xPositon, zPosition].IsOccupiedByShip();
     }
 
-
+    // TODO: fix the debugging log
     void DebugGrid()
     {
         string seperatChars = "";
@@ -137,31 +132,31 @@ public class GameManager : MonoBehaviour
         for (int x = 0; x < 10; x++)
         {
             seperatChars += "|";
-            for (int y = 0; y < 10; y++)
+            for (int z = 0; z < 10; z++)
             {
                 string occupationTypeSymbol = "+";
-                if (players[activePlayer].myGrid[x, y].occupationType == OccupationType.Carrier)
+                if (players[activePlayer].myGrid[x, z].occupationType == OccupationType.Carrier)
                 {
                     occupationTypeSymbol = "C";
                 }
-                if (players[activePlayer].myGrid[x, y].occupationType == OccupationType.Battleship)
+                if (players[activePlayer].myGrid[x, z].occupationType == OccupationType.Battleship)
                 {
                     occupationTypeSymbol = "B";
                 }
-                if (players[activePlayer].myGrid[x, y].occupationType == OccupationType.Submarine)
+                if (players[activePlayer].myGrid[x, z].occupationType == OccupationType.Submarine)
                 {
                     occupationTypeSymbol = "S";
                 }
-                if (players[activePlayer].myGrid[x, y].occupationType == OccupationType.Destroyer)
+                if (players[activePlayer].myGrid[x, z].occupationType == OccupationType.Destroyer)
                 {
                     occupationTypeSymbol = "D";
                 }
-                if (players[activePlayer].myGrid[x, y].occupationType == OccupationType.Cruiser)
+                if (players[activePlayer].myGrid[x, z].occupationType == OccupationType.Cruiser)
                 {
                     occupationTypeSymbol = "R";
                 }
                 seperatChars += occupationTypeSymbol;
-                seperatorCount = y % 10;
+                seperatorCount = z % 10;
                 if(seperatorCount == 9)
                 {
                     seperatChars += "|";
@@ -433,8 +428,17 @@ public class GameManager : MonoBehaviour
         // Hide my ships
         HideAllMyShips();
 
-        // Switch player
+        // Switch player 
         SwitchPlayer();
+
+        // If we are in player vs AI mode
+        if(players[activePlayer].playerType == Player.PlayerType.NPC)
+        {
+            isShooting = false;
+            gameState = GameStates.Idle;
+            NPCShot();
+            yield break;
+        }
 
         // Activate the correct panel
         players[activePlayer].shootPanel.SetActive(true);
@@ -471,10 +475,13 @@ public class GameManager : MonoBehaviour
         int index = 0;
         int x = 0;
         int z = 0;
+        TileInfo tileInfo;
 
         int opponent = ReturnOpponent();
 
+        //------------------------------
         // Partially revealed ships
+        //------------------------------
         // List containing an array with the coordinates of our partially revealed tiles
         List<int[]> partiallyRevealedTiles = new List<int[]>();
 
@@ -516,11 +523,41 @@ public class GameManager : MonoBehaviour
             x = neighbourList[index][0];
             z = neighbourList[index][1];
 
-            TileInfo tileInfo = players[opponent].playfield.GetTileInfo(x,z);
+            tileInfo = players[opponent].playfield.GetTileInfo(x,z);
 
             CheckShot(x, z, tileInfo);
             return;
         }
+
+        //------------------------------
+        // Shot any another random
+        //------------------------------
+        // List of tiles we already shot
+        List<int[]> randomShootList = new List<int[]>();
+
+        // Loop through the grid to see which ones we haven't revealed/shot at yet
+        for (int playGridX = 0; playGridX < 10; playGridX++)
+        {
+            for (int playGridY = 0; playGridY < 10; playGridY++)
+            {
+                // We haven't shot this one yet aka not revealed
+                if(players[opponent].revealedGrid[playGridX,playGridY] != true)
+                {
+                    // Add it to our list of tiles to shot
+                    randomShootList.Add(new int[2] { playGridX, playGridY });
+                }
+            }
+        }
+        // Lets pick a random tile from the list
+        index = UnityEngine.Random.Range(0, randomShootList.Count);
+
+        x = randomShootList[index][0];
+        z = randomShootList[index][1];
+
+        tileInfo = players[opponent].playfield.GetTileInfo(x, z);
+
+        CheckShot(x, z, tileInfo);
+
     }
 
     private List<int[]> GetNeighbours(int[] originalCoordinates)
