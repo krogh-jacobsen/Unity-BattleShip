@@ -6,7 +6,7 @@ public class Readme
      * TODO: All the UI could be prefabs
      * TODO: Instantiate the ships nested as childs to a main object to avoid scene clutter
      * TODO: Utility helper class?
-     * 
+     * TODO: No need to have duplicated win panels (lets just updat the text)
      * 
      * Gameplay ideas:
      * 

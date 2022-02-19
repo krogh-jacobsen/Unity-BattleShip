@@ -20,6 +20,7 @@ public class Player
     public GameObject placePanel;
     public GameObject shootPanel;
     public GameObject camPosition;
+    public GameObject Winpanel;
 
     // Panels to show and hide ships
 

@@ -29,10 +29,11 @@ public class GameManager : MonoBehaviour
         Idle
     }
     public GameStates gameState;
-    public GameObject battleCamPosition;
+    public GameObject battleCameraPosition;
     public bool cameraIsMoving;
     public GameObject placingCanvas;
 
+    
     bool isShooting;    // Protect for coroutine
     public GameObject rocketPrefab;
     float rocketAmplitude = 3f;
@@ -47,6 +48,10 @@ public class GameManager : MonoBehaviour
     {
         // Hide all panels
         HideAllPanels();
+
+        // Hide win panels
+        players[0].Winpanel.SetActive(false);
+        players[1].Winpanel.SetActive(false);
 
         // Active place the panel from the first player
         players[activePlayer].placePanel.SetActive(true);
@@ -91,7 +96,7 @@ public class GameManager : MonoBehaviour
                         // NPC turn
                     }
                     // Move camera to battle mode
-                    StartCoroutine(MoveCamera(battleCamPosition));
+                    StartCoroutine(MoveCamera(battleCameraPosition));
                 }
                 break;
             case GameStates.Idle:
@@ -223,6 +228,14 @@ public class GameManager : MonoBehaviour
 
             // Switch to the 2nd player
             SwitchPlayer();
+
+            // Check if the player 2 is NPC
+            if(players[activePlayer].playerType == Player.PlayerType.NPC)
+            {
+                gameState = GameStates.P2_Place_Ships;
+                StartCoroutine(MoveCamera(battleCameraPosition));
+                return;
+            }
 
             // Move the camera 2nd player
             StartCoroutine(MoveCamera(players[activePlayer].camPosition));
@@ -421,6 +434,8 @@ public class GameManager : MonoBehaviour
         {
             print("You win");
             // Win logic
+            // Hide win panels
+            players[activePlayer].Winpanel.SetActive(true);
             yield break;
         }
         yield return new WaitForSeconds(1f);
@@ -606,8 +621,8 @@ public class GameManager : MonoBehaviour
                 int checkX = originalCoordinates[0] + neighbourX;
                 int checkZ = originalCoordinates[1] + neighbourZ;
 
-                // Check if we are inside the our 10x10 grid
-                if(checkX >= 0 && checkX < 10 && checkZ >= 0 && checkZ < 10)
+                // Check if we are inside the our 10x10 grid and has not been revealed
+                if(checkX >= 0 && checkX < 10 && checkZ >= 0 && checkZ < 10 && players[ReturnOpponent()].revealedGrid[checkX,checkZ] == false)
                 {
                     neighbours.Add(new int[2] { checkX, checkZ });
                 }

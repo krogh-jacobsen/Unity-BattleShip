@@ -62,9 +62,14 @@ public class PlacingManager : MonoBehaviour
         // NPC
         if(playerType == "NPC")
         {
+
             // Auto placement for CPU
+            // TODO: Fix the autoplacing and then enable this
+            // AutoPlaceShips();
 
             // Update Game Manager that the turn is complete
+            // TODO: Fix the autoplacing and then enable this
+            // GameManager.instance.PlacingReady();
         }
     }
     
