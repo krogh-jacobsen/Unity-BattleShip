@@ -322,7 +322,6 @@ public class GameManager : MonoBehaviour
     // Battle mode
     //------------------------------
 
-
     // Shoot panel button
     public void ShotButtonPressed()
     {
@@ -409,11 +408,13 @@ public class GameManager : MonoBehaviour
             }
 
             // Highlight the title different
+            // TODO: Add sound effect and particles for hit
             tileInfo.ActivateHighlight(3, true);
         }
         else
         {
-            // Not hit a ship
+            // Not hit a ship (hit water)
+            // TODO: Add sound effect and particles for water shot
             tileInfo.ActivateHighlight(2, true);
         }
         
@@ -425,16 +426,21 @@ public class GameManager : MonoBehaviour
         {
             print("You win");
             // Win logic
+            yield break;
         }
+        yield return new WaitForSeconds(1f);
 
         // Hide my ships
+        HideAllMyShips();
 
         // Switch player
+        SwitchPlayer();
 
         // Activate the correct panel
+        players[activePlayer].shootPanel.SetActive(true);
 
         // Gamestate to idle
-
+        gameState = GameStates.Idle;
 
         // Set flag 
         isShooting = false;
@@ -455,4 +461,110 @@ public class GameManager : MonoBehaviour
         return targetPosition != (rocket.transform.position = Vector3.Lerp(rocket.transform.position, myPosition, currentLerpTime));
     }
 
+
+    //------------------------------
+    // NPC Battle mode
+    //------------------------------
+
+    void NPCShot()
+    {
+        int index = 0;
+        int x = 0;
+        int z = 0;
+
+        int opponent = ReturnOpponent();
+
+        // Partially revealed ships
+        // List containing an array with the coordinates of our partially revealed tiles
+        List<int[]> partiallyRevealedTiles = new List<int[]>();
+
+        // Loopthrough all of our grid to examine what we hit and havent yet
+        // TODO: 10 == gridsize but shouldnt that be a constant?
+        for (int playGridX = 0; playGridX < 10; playGridX++)
+        {
+            for (int playGridY = 0; playGridY < 10; playGridY++)
+            {
+                // Did it get hit already
+                if(players[opponent].revealedGrid[playGridX, playGridY])
+                {
+                    // Is the tile already occupied by a ship?
+                    if(players[opponent].myGrid[playGridX, playGridY].IsOccupiedByShip())
+                    {
+                        // Ok there is a ship here but the whole ship hasn't been destroyed already?
+                        if(players[opponent].myGrid[playGridX, playGridY].placedShipBehavior.IsHit())
+                        {
+                            // Add to the list of tiles with ships hit but not fully destroyed yet
+                            partiallyRevealedTiles.Add(new int[2] { playGridX, playGridY });
+                        }
+                    }
+                }
+            }
+        }
+
+        // Store all the neigbour tiles to the partially sunk ships
+        List<int[]> neighbourList = new List<int[]>();
+        if(partiallyRevealedTiles.Count > 0)
+        {
+            for (int i = 0; i < partiallyRevealedTiles.Count; i++)
+            {
+                neighbourList.AddRange(GetNeighbours(partiallyRevealedTiles[i]));
+            }
+        }
+    }
+
+    private List<int[]> GetNeighbours(int[] originalCoordinates)
+    {
+        List<int[]> neighbours = new List<int[]>();
+        
+        // Find all surrounding neighbour tiles so in a 3x3 grid around the original coordinates
+        // We want to start left of original coordinate so our starting point is -1 and end point +1
+        // TODO: Refactor to just add the tiles we need rather than do this overcomplicated loop
+        for (int neighbourX = -1; neighbourX < 1; neighbourX++)
+        {
+            for (int neighbourZ = -1; neighbourZ < 1; neighbourZ++)
+            {
+                // Ignore diagonals and the center
+                if(neighbourX == 0 && neighbourZ == 0)
+                {
+                    // Skip to the next part of the loop
+                    continue;
+                }
+                // Top left diagonal is skipped too
+                if (neighbourX == -1 && neighbourZ == 1)
+                {
+                    // Skip to the next part of the loop
+                    continue;
+                }
+                // Top right diagonal is skipped too
+                if (neighbourX == 1 && neighbourZ == 1)
+                {
+                    // Skip to the next part of the loop
+                    continue;
+                }
+                // Bottom left diagonal is skipped too
+                if (neighbourX == -1 && neighbourZ == -1)
+                {
+                    // Skip to the next part of the loop
+                    continue;
+                }
+                // Bottom right diagonal is skipped too
+                if (neighbourX == 1 && neighbourZ == -1)
+                {
+                    // Skip to the next part of the loop
+                    continue;
+                }
+
+                // TODO: What happened here?
+                int checkX = originalCoordinates[0] + neighbourX;
+                int checkZ = originalCoordinates[1] + neighbourZ;
+
+                // Check if we are inside the our 10x10 grid
+                if(checkX >= 0 && checkX < 10 && checkZ >= 0 && checkZ < 10)
+                {
+                    neighbours.Add(new int[2] { checkX, checkZ });
+                }
+            }
+        }
+        return neighbours;
+    }
 }
