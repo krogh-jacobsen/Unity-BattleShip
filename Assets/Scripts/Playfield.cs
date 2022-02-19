@@ -75,4 +75,17 @@ public class Playfield : MonoBehaviour
         }
 
     }
+
+    // Section 62 NPC3
+    public TileInfo GetTileInfo(int x, int z) 
+    {
+        for (int i = 0; i < tileInfoList.Count; i++)
+        {
+            if(tileInfoList[i].xPosition == x  && tileInfoList[i].zPosition == z)
+            {
+                return tileInfoList[i];
+            }
+        }
+        return null;
+    }
 }

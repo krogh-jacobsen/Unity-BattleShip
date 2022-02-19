@@ -509,6 +509,17 @@ public class GameManager : MonoBehaviour
             {
                 neighbourList.AddRange(GetNeighbours(partiallyRevealedTiles[i]));
             }
+
+            // Section 62 NPC3
+            index = UnityEngine.Random.Range(0, neighbourList.Count);
+
+            x = neighbourList[index][0];
+            z = neighbourList[index][1];
+
+            TileInfo tileInfo = players[opponent].playfield.GetTileInfo(x,z);
+
+            CheckShot(x, z, tileInfo);
+            return;
         }
     }
 
@@ -567,4 +578,6 @@ public class GameManager : MonoBehaviour
         }
         return neighbours;
     }
+
+
 }
