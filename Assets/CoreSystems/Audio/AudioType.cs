@@ -1,30 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class AudioType : MonoBehaviour
+namespace UnityCoreSystems
 {
-	#region Fields
-	//[Header("")]
-	[SerializeField]
-	#endregion
-
-	#region Properties
-	#endregion
-
-	#region MonoBehaviour
-	void Start()
-	{
-
-	}
-
-	void Update()
-	{
-
-	}
-	#endregion
-
-	#region Methods
-
-	#endregion
+    namespace Audio
+    {
+        public enum AudioType
+        {
+            None,
+            SFX_01,
+            ST_01
+        }
+    }
 }
