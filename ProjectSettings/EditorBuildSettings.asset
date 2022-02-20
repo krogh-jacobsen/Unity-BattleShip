@@ -6,9 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Menu.unity
+    path: Assets/Games/NavyBattle/Scenes/Menu.unity
     guid: 9218640646ccc25428c9347022189c7a
   - enabled: 1
-    path: Assets/Scenes/PlayerVsPlayer.unity
+    path: Assets/Games/NavyBattle/Scenes/PlayerVsPlayer.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}
