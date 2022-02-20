@@ -6,22 +6,20 @@ namespace NavyBattleGame
 {
     public class AnimateWater : MonoBehaviour
     {
-
+        #region Fields
+        private float offset;
+        private Material material;
         public float scrollSpeed = 0.5f;
-
-        float offset;
         public bool U = false;
         public bool V = false;
+        #endregion
 
-        Material material;
-
-        // Start is called before the first frame update
+        #region MonoBehaviour
         void Start()
         {
             material = GetComponent<MeshRenderer>().material;
         }
-
-        // Update is called once per frame
+        
         void Update()
         {
             offset = Time.time * scrollSpeed % 1;
@@ -37,8 +35,7 @@ namespace NavyBattleGame
             {
                 material.mainTextureOffset = new Vector2(0, offset);
             }
-
-
         }
+        #endregion
     }
 }

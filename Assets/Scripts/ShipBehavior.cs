@@ -6,18 +6,22 @@ namespace NavyBattleGame
 {
     public class ShipBehavior : MonoBehaviour
     {
+        #region Fields
+        private int numberOfHitpoints;
         public int shipLength;
-        private int numberOfHits;
         public OccupationType type;
+        #endregion
 
+        #region MonoBehaviour
         private void Start()
         {
-            numberOfHits = shipLength;
+            numberOfHitpoints = shipLength;
         }
-
+        #endregion
+        #region Methods
         private bool IsSunk()
         {
-            return shipLength <= 0;
+            return numberOfHitpoints <= 0;
             //if(shipLength <= 0)
             //{
             //    return true;
@@ -27,12 +31,12 @@ namespace NavyBattleGame
 
         public bool IsHit()
         {
-            return numberOfHits < shipLength && numberOfHits > 0;
+            return numberOfHitpoints < shipLength && numberOfHitpoints > 0;
         }
 
         public bool TakeDamage()
         {
-            numberOfHits--;
+            numberOfHitpoints--;
             if (IsSunk())
             {
                 // Report the ship is sunk to the GameManager
@@ -44,6 +48,6 @@ namespace NavyBattleGame
             }
             return false;
         }
-
+        #endregion
     }
 }

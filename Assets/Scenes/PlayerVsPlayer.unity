@@ -8842,21 +8842,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04a3d6cf9a202d147b466021102206e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  activePlayer: 0
+  currentActivePlayer: 0
   players:
   - playerType: 0
     playfield: {fileID: 1452380932}
     placePanel: {fileID: 1184205086}
     shootPanel: {fileID: 46635270}
-    camPosition: {fileID: 1471655996}
     Winpanel: {fileID: 1649377373}
+    camPosition: {fileID: 1471655996}
     placedShipList: []
-  - playerType: 1
+  - playerType: 0
     playfield: {fileID: 949194397}
     placePanel: {fileID: 312428491}
     shootPanel: {fileID: 1517964205}
-    camPosition: {fileID: 657792587}
     Winpanel: {fileID: 1348801545}
+    camPosition: {fileID: 657792587}
     placedShipList: []
   gameState: 2
   battleCameraPosition: {fileID: 322119728}

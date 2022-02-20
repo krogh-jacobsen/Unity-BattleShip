@@ -6,15 +6,14 @@ namespace NavyBattleGame
 {
     public class Playfield : MonoBehaviour
     {
+        #region Fields
         public bool fill;
-
         public GameObject tilePrefab;
+        private List<GameObject> tileList = new List<GameObject>();
+        private List<TileInfo> tileInfoList = new List<TileInfo>();
+        #endregion
 
-        List<GameObject> tileList = new List<GameObject>();
-
-        List<TileInfo> tileInfoList = new List<TileInfo>();
-
-
+        #region MonoBehaviour
         private void Start()
         {
             SpawnPlayerField();
@@ -39,15 +38,17 @@ namespace NavyBattleGame
 
         }
 
+        private void OnDrawGizmos()
+        {
+            //SpawnPlayerField();
+        }
+        #endregion
+        
+        #region Methods
         public bool RequestTile(TileInfo _tileInfo)
         {
             // Will return either true or false 
             return tileInfoList.Contains(_tileInfo);
-        }
-
-        private void OnDrawGizmos()
-        {
-            //SpawnPlayerField();
         }
 
         private void SpawnPlayerField()
@@ -94,5 +95,6 @@ namespace NavyBattleGame
             }
             return null;
         }
+        #endregion
     }
 }

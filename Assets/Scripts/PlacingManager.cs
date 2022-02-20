@@ -10,15 +10,17 @@ namespace NavyBattleGame
 
     public class PlacingManager : MonoBehaviour
     {
+        #region Fields
         // TODO: Refactor the singleton here
         public static PlacingManager instance;
 
+        private bool canPlace;  // Free to place
+        private Playfield playfield;
         public bool isInPlacingMode; //canPlace
-        bool canPlace;  // Free to place
-
-        Playfield playfield;
         public LayerMask layerToCheck;
-
+        private int currentShipType = 0;
+        private RaycastHit raycastHit;      // called hit in tutorial
+        private Vector3 raycastHitPointPosition;    // called hitpoint in tutorial
 
         [System.Serializable]
         public class ShipsToPlace
@@ -32,13 +34,10 @@ namespace NavyBattleGame
         }
 
         public Button readyButton;
-
         public List<ShipsToPlace> shipList = new List<ShipsToPlace>();
-        int currentShipType = 0;
 
-        RaycastHit raycastHit;      // called hit in tutorial
-        Vector3 raycastHitPointPosition;    // called hitpoint in tutorial
-
+        #endregion
+        #region MonoBehaviour
         private void Awake()
         {
             instance = this;
@@ -53,29 +52,6 @@ namespace NavyBattleGame
             //ActivateShipGhost(currentShip);
             isInPlacingMode = false;
         }
-
-        public void SetPlayFieldForPlayer(Playfield _playfield, string playerType)
-        {
-            playfield = _playfield;
-            // Initialize the readybutton
-            readyButton.interactable = false;
-
-            ClearAllShips();
-
-            // NPC
-            if (playerType == "NPC")
-            {
-
-                // Auto placement for CPU
-                // TODO: Fix the autoplacing and then enable this
-                // AutoPlaceShips();
-
-                // Update Game Manager that the turn is complete
-                // TODO: Fix the autoplacing and then enable this
-                // GameManager.instance.PlacingReady();
-            }
-        }
-
         void Update()
         {
             if (isInPlacingMode)
@@ -107,6 +83,31 @@ namespace NavyBattleGame
             }
             // Place ghost
             PlaceGhost();
+        }
+
+        #endregion
+
+        #region Methods
+        public void SetPlayFieldForPlayer(Playfield _playfield, string playerType)
+        {
+            playfield = _playfield;
+            // Initialize the readybutton
+            readyButton.interactable = false;
+
+            ClearAllShips();
+
+            // NPC
+            if (playerType == "NPC")
+            {
+
+                // Auto placement for CPU
+                // TODO: Fix the autoplacing and then enable this
+                // AutoPlaceShips();
+
+                // Update Game Manager that the turn is complete
+                // TODO: Fix the autoplacing and then enable this
+                // GameManager.instance.PlacingReady();
+            }
         }
 
         void ActivateShipGhost(int index)
@@ -223,7 +224,6 @@ namespace NavyBattleGame
 
         }
 
-        #region buttons
         // Buttons
         public void PlaceShipButton(int index)
         {

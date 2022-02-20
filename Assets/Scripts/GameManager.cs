@@ -8,23 +8,28 @@ namespace NavyBattleGame
     public class GameManager : MonoBehaviour
     {
         public static GameManager instance;
-
-        public int activePlayer;
-
-        public Player[] players = new Player[2];
-
-        // State machines
-
-        public GameState.GameStates gameState;
-        public GameObject battleCameraPosition;
-        public bool cameraIsMoving;
-        public GameObject placingCanvas;
-        public GameObject rocketPrefab;
-
+        #region Fields
         private bool isShooting;    // Protect for coroutine
         private float rocketAmplitude = 3f;
         private float currentLerpTime;
 
+        [Header("Player information")]
+        public int currentActivePlayer;
+        public Player[] players = new Player[2];
+
+        [Tooltip("The current game state")]
+        public GameState.GameStates gameState;
+        [Tooltip("The position of the camera perspective used when in battle mode")]
+        public GameObject battleCameraPosition;
+        [Tooltip("A flag to indicate when the camerai is moving")]
+        public bool cameraIsMoving;
+        [Tooltip("Our canvas which shows all the placing options")]
+        public GameObject placingCanvas;
+        [Tooltip("The rocket prefab used for animating attack")]
+        public GameObject rocketPrefab;
+        #endregion
+
+        #region MonoBehaviour
         private void Awake()
         {
             instance = this;
@@ -32,7 +37,6 @@ namespace NavyBattleGame
 
         private void Start()
         {
-            // Hide all panels
             HideAllPanels();
 
             // Hide win panels
@@ -40,12 +44,11 @@ namespace NavyBattleGame
             players[1].Winpanel.SetActive(false);
 
             // Active place the panel from the first player
-            players[activePlayer].placePanel.SetActive(true);
+            players[currentActivePlayer].placePanel.SetActive(true);
             gameState = GameState.GameStates.Idle;
 
             // Move the camera to the field
         }
-
 
         //------------------------------
         // Preparing a Battle
@@ -58,26 +61,26 @@ namespace NavyBattleGame
                 case GameState.GameStates.P1_Place_Ships:
                     {
                         // Deactivate Panel
-                        players[activePlayer].placePanel.SetActive(false);
+                        players[currentActivePlayer].placePanel.SetActive(false);
                         // Call the placing Manager
-                        PlacingManager.instance.SetPlayFieldForPlayer(players[activePlayer].playfield, players[activePlayer].playerType.ToString());
-                        StartCoroutine(MoveCamera(players[activePlayer].camPosition));
+                        PlacingManager.instance.SetPlayFieldForPlayer(players[currentActivePlayer].playfield, players[currentActivePlayer].playerType.ToString());
+                        StartCoroutine(MoveCamera(players[currentActivePlayer].camPosition));
                         gameState = GameState.GameStates.Idle;
                     }
                     break;
                 case GameState.GameStates.P2_Place_Ships:
                     {
                         // Deactivate Panel
-                        players[activePlayer].placePanel.SetActive(false);
+                        players[currentActivePlayer].placePanel.SetActive(false);
 
-                        PlacingManager.instance.SetPlayFieldForPlayer(players[activePlayer].playfield, players[activePlayer].playerType.ToString());
+                        PlacingManager.instance.SetPlayFieldForPlayer(players[currentActivePlayer].playfield, players[currentActivePlayer].playerType.ToString());
                         gameState = GameState.GameStates.Idle;
                     }
                     break;
                 case GameState.GameStates.Shooting:
                     {
                         // Battlemode
-                        if (players[activePlayer].playerType == Player.PlayerType.NPC)
+                        if (players[currentActivePlayer].playerType == Player.PlayerType.NPC)
                         {
                             // NPC turn
                         }
@@ -92,10 +95,12 @@ namespace NavyBattleGame
                     break;
             }
         }
+        #endregion
 
+        #region Methods
         private void AddShipToList(GameObject placedShip)
         {
-            players[activePlayer].placedShipList.Add(placedShip);
+            players[currentActivePlayer].placedShipList.Add(placedShip);
         }
 
         public void UpdateGrid(Transform shipTransform, ShipBehavior shipBehavior, GameObject placedShip)
@@ -103,7 +108,7 @@ namespace NavyBattleGame
             foreach (Transform child in shipTransform)
             {
                 TileInfo tileInfo = child.GetComponent<GhostBehavior>().GetTileInfo();
-                players[activePlayer].myGrid[tileInfo.xPosition, tileInfo.zPosition] = new Tile(shipBehavior.type, shipBehavior);
+                players[currentActivePlayer].myGrid[tileInfo.xPosition, tileInfo.zPosition] = new Tile(shipBehavior.type, shipBehavior);
             }
 
             AddShipToList(placedShip);
@@ -112,7 +117,7 @@ namespace NavyBattleGame
 
         public bool CheckIfOccupied(int xPositon, int zPosition)
         {
-            return players[activePlayer].myGrid[xPositon, zPosition].IsOccupiedByShip();
+            return players[currentActivePlayer].myGrid[xPositon, zPosition].IsOccupiedByShip();
         }
 
         // TODO: fix the debugging log
@@ -126,23 +131,23 @@ namespace NavyBattleGame
                 for (int z = 0; z < 10; z++)
                 {
                     string occupationTypeSymbol = "+";
-                    if (players[activePlayer].myGrid[x, z].occupationType == OccupationType.Carrier)
+                    if (players[currentActivePlayer].myGrid[x, z].occupationType == OccupationType.Carrier)
                     {
                         occupationTypeSymbol = "C";
                     }
-                    if (players[activePlayer].myGrid[x, z].occupationType == OccupationType.Battleship)
+                    if (players[currentActivePlayer].myGrid[x, z].occupationType == OccupationType.Battleship)
                     {
                         occupationTypeSymbol = "B";
                     }
-                    if (players[activePlayer].myGrid[x, z].occupationType == OccupationType.Submarine)
+                    if (players[currentActivePlayer].myGrid[x, z].occupationType == OccupationType.Submarine)
                     {
                         occupationTypeSymbol = "S";
                     }
-                    if (players[activePlayer].myGrid[x, z].occupationType == OccupationType.Destroyer)
+                    if (players[currentActivePlayer].myGrid[x, z].occupationType == OccupationType.Destroyer)
                     {
                         occupationTypeSymbol = "D";
                     }
-                    if (players[activePlayer].myGrid[x, z].occupationType == OccupationType.Cruiser)
+                    if (players[currentActivePlayer].myGrid[x, z].occupationType == OccupationType.Cruiser)
                     {
                         occupationTypeSymbol = "R";
                     }
@@ -160,11 +165,11 @@ namespace NavyBattleGame
 
         public void DeleteAllShipsFromList()
         {
-            foreach (GameObject ship in players[activePlayer].placedShipList)
+            foreach (GameObject ship in players[currentActivePlayer].placedShipList)
             {
                 Destroy(ship);
             }
-            players[activePlayer].placedShipList.Clear();
+            players[currentActivePlayer].placedShipList.Clear();
 
             // Reinit the grid
             InitializeGrid();
@@ -178,8 +183,8 @@ namespace NavyBattleGame
                 for (int y = 0; y < 10; y++)
                 {
                     OccupationType occupationType = OccupationType.Empty;
-                    players[activePlayer].myGrid[x, y] = new Tile(occupationType, null);
-                    players[activePlayer].revealedGrid[x, y] = false;
+                    players[currentActivePlayer].myGrid[x, y] = new Tile(occupationType, null);
+                    players[currentActivePlayer].revealedGrid[x, y] = false;
                 }
             }
         }
@@ -207,7 +212,7 @@ namespace NavyBattleGame
         // Ready button
         public void PlacingReady()
         {
-            if (activePlayer == 0)
+            if (currentActivePlayer == 0)
             {
                 // Hide my ships
                 HideAllMyShips();
@@ -216,7 +221,7 @@ namespace NavyBattleGame
                 SwitchPlayer();
 
                 // Check if the player 2 is NPC
-                if (players[activePlayer].playerType == Player.PlayerType.NPC)
+                if (players[currentActivePlayer].playerType == Player.PlayerType.NPC)
                 {
                     gameState = GameState.GameStates.P2_Place_Ships;
                     StartCoroutine(MoveCamera(battleCameraPosition));
@@ -224,17 +229,17 @@ namespace NavyBattleGame
                 }
 
                 // Move the camera 2nd player
-                StartCoroutine(MoveCamera(players[activePlayer].camPosition));
+                StartCoroutine(MoveCamera(players[currentActivePlayer].camPosition));
                 //StartCoroutine(MoveCamera(players[1].camPosition));
 
                 // Activate placing panel p2
-                players[activePlayer].placePanel.SetActive(true);
+                players[currentActivePlayer].placePanel.SetActive(true);
 
                 // Return
                 return;
             }
 
-            if (activePlayer == 1)
+            if (currentActivePlayer == 1)
             {
                 // Hide my ships
                 HideAllMyShips();
@@ -243,11 +248,11 @@ namespace NavyBattleGame
                 SwitchPlayer();
 
                 // Move the camera to player 1
-                StartCoroutine(MoveCamera(players[activePlayer].camPosition));
+                StartCoroutine(MoveCamera(players[currentActivePlayer].camPosition));
                 //StartCoroutine(MoveCamera(battleCamPosition));
 
                 // Activate shot panel p1
-                players[activePlayer].shootPanel.SetActive(true);
+                players[currentActivePlayer].shootPanel.SetActive(true);
 
                 // Deactivate placing canvas
                 placingCanvas.SetActive(false);
@@ -259,7 +264,7 @@ namespace NavyBattleGame
 
         private void UnHideAllMyShips()
         {
-            foreach (var ship in players[activePlayer].placedShipList)
+            foreach (var ship in players[currentActivePlayer].placedShipList)
             {
                 ship.GetComponent<MeshRenderer>().enabled = true;
             }
@@ -267,7 +272,7 @@ namespace NavyBattleGame
 
         void HideAllMyShips()
         {
-            foreach (var ship in players[activePlayer].placedShipList)
+            foreach (var ship in players[currentActivePlayer].placedShipList)
             {
                 ship.GetComponent<MeshRenderer>().enabled = false;
             }
@@ -275,13 +280,13 @@ namespace NavyBattleGame
 
         void SwitchPlayer()
         {
-            activePlayer++;
+            currentActivePlayer++;
 
             // When ever activeplayer reach 2 it resets to zero
-            activePlayer %= 2;
+            currentActivePlayer %= 2;
         }
 
-        IEnumerator MoveCamera(GameObject cameraGameObject)
+        private IEnumerator MoveCamera(GameObject cameraGameObject)
         {
             // Break out if the camera is already moving
             if (cameraIsMoving)
@@ -322,17 +327,17 @@ namespace NavyBattleGame
             // Make oyr own ships visible
             UnHideAllMyShips();
             // Update UI
-            players[activePlayer].shootPanel.SetActive(false);
+            players[currentActivePlayer].shootPanel.SetActive(false);
             // Change game state
             gameState = GameState.GameStates.Shooting;
         }
 
         // TODO: Rename function to something more appropiate
-        int ReturnOpponent()
+        private int ReturnOpponent()
         {
             // TODO: Refactor this ugly asss code
             // Start by defining who I am
-            int me = activePlayer;
+            int me = currentActivePlayer;
             me++;
             me %= 2;
             int opponent = me;
@@ -344,7 +349,7 @@ namespace NavyBattleGame
             StartCoroutine(CheckCoordinate(x, z, tileInfo));
         }
 
-        IEnumerator CheckCoordinate(int x, int z, TileInfo tileInfo)
+        private IEnumerator CheckCoordinate(int x, int z, TileInfo tileInfo)
         {
             if (isShooting)
             {
@@ -421,7 +426,7 @@ namespace NavyBattleGame
                 print("You win");
                 // Win logic
                 // Hide win panels
-                players[activePlayer].Winpanel.SetActive(true);
+                players[currentActivePlayer].Winpanel.SetActive(true);
                 yield break;
             }
             yield return new WaitForSeconds(1f);
@@ -433,7 +438,7 @@ namespace NavyBattleGame
             SwitchPlayer();
 
             // If we are in player vs AI mode
-            if (players[activePlayer].playerType == Player.PlayerType.NPC)
+            if (players[currentActivePlayer].playerType == Player.PlayerType.NPC)
             {
                 isShooting = false;
                 gameState = GameState.GameStates.Idle;
@@ -442,7 +447,7 @@ namespace NavyBattleGame
             }
 
             // Activate the correct panel
-            players[activePlayer].shootPanel.SetActive(true);
+            players[currentActivePlayer].shootPanel.SetActive(true);
 
             // Gamestate to idle
             gameState = GameState.GameStates.Idle;
@@ -452,7 +457,7 @@ namespace NavyBattleGame
         }
 
         // TODO: Move this out to seperate rocket class
-        bool MoveInArcToTile(Vector3 startPosition, Vector3 targetPosition, float speed, GameObject rocket)
+        private bool MoveInArcToTile(Vector3 startPosition, Vector3 targetPosition, float speed, GameObject rocket)
         {
             currentLerpTime += speed * Time.deltaTime;
             Vector3 myPosition = Vector3.Lerp(startPosition, targetPosition, currentLerpTime);
@@ -471,7 +476,7 @@ namespace NavyBattleGame
         // NPC Battle mode
         //------------------------------
 
-        void NPCShot()
+        private void NPCShot()
         {
             int index = 0;
             int x = 0;
@@ -617,6 +622,6 @@ namespace NavyBattleGame
             return neighbours;
         }
 
-
+        #endregion
     }
 }

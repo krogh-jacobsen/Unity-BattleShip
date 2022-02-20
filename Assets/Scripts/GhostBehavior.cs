@@ -7,17 +7,20 @@ namespace NavyBattleGame
 {
     public class GhostBehavior : MonoBehaviour
     {
+        #region Fields
         public LayerMask layerToCheck;
-        RaycastHit raycastHit;      // Named hit in tutorial
-        TileInfo tileInfo;          // Named info in tutorial
+        private RaycastHit raycastHit;      // Named hit in tutorial
+        private TileInfo tileInfo;          // Named info in tutorial
+        private Playfield playfield;
+        #endregion
 
-        Playfield playfield;
-
+        #region Methods
         public void SetPlayfield(Playfield _playfield)
         {
             playfield = _playfield;
         }
 
+        
         // Check if the ghost is above a tile
         public bool OverTile()
         {
@@ -55,5 +58,6 @@ namespace NavyBattleGame
 
             return null;
         }
+        #endregion
     }
 }

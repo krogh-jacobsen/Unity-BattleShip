@@ -2,7 +2,6 @@ public class Readme
 {
     /*
      * TODO: Fix the autoplacing
-     * TODO: Move everything into namespace
      * TODO: Clean up all scripts with style guide formatting rules
      * TODO: All the UI could be prefabs
      * TODO: Instantiate the ships nested as childs to a main object to avoid scene clutter

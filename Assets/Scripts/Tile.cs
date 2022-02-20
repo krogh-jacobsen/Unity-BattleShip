@@ -18,9 +18,13 @@ namespace NavyBattleGame
 
     public class Tile
     {
+        #region Fields
+        [Header("Ship info")]
         public OccupationType occupationType;
         public ShipBehavior placedShipBehavior;
+        #endregion
 
+        #region Methods
         // Constructor
         public Tile(OccupationType _occupationType, ShipBehavior _placedShipBehavior)
         {
@@ -35,5 +39,6 @@ namespace NavyBattleGame
                 occupationType == OccupationType.Destroyer ||
                 occupationType == OccupationType.Cruiser;
         }
+        #endregion
     }
 }
