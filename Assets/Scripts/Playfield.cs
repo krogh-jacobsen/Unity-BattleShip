@@ -15,6 +15,8 @@ public class Playfield : MonoBehaviour
 
     private void Start()
     {
+        SpawnPlayerField();
+
         // Ensure we start fresh by removing old data
         tileList.Clear();
         tileInfoList.Clear();
@@ -43,7 +45,7 @@ public class Playfield : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        SpawnPlayerField();
+        //SpawnPlayerField();
     }
 
     private void SpawnPlayerField()
@@ -68,6 +70,8 @@ public class Playfield : MonoBehaviour
                     GameObject tile = Instantiate(tilePrefab, position, Quaternion.identity, transform);
                     // Initiate the location info of the new spawned tile
                     tile.GetComponent<TileInfo>().SetTileInfo(x, z);
+
+                    tile.name = x.ToString() + "|" + z.ToString();
                     // Add to our list of tile
                     tileList.Add(tile);
                 }

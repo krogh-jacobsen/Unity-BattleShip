@@ -8,6 +8,7 @@ public class Readme
      * TODO: Instantiate the ships nested as childs to a main object to avoid scene clutter
      * TODO: Utility helper class?
      * TODO: No need to have duplicated win panels (lets just updat the text)
+     * TODO: Fix the p v p & p vs npc mode
      * 
      * Gameplay ideas:
      * 
