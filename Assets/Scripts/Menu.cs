@@ -2,24 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
-public class Menu : MonoBehaviour
+namespace NavyBattleGame
 {
-	#region Methods
-	public void RestartGame()
-    {
-		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-	public void BackToMenu()
-    {
-		SceneManager.LoadScene("Menu");
-    }
-
-	public void LoadGame(string sceneToLoad) 
+	public class Menu : MonoBehaviour
 	{
-		SceneManager.LoadScene(sceneToLoad); 
-	}
+		#region Methods
+		public void RestartGame()
+		{
+			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+		}
 
-	#endregion
+		public void BackToMenu()
+		{
+			SceneManager.LoadScene("Menu");
+		}
+
+		public void LoadGame(string sceneToLoad) 
+		{
+			SceneManager.LoadScene(sceneToLoad); 
+		}
+
+		#endregion
+	}
 }

@@ -2,45 +2,48 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShipBehavior : MonoBehaviour
+namespace NavyBattleGame
 {
-    public int shipLength;
-    private int numberOfHits;
-    public OccupationType type;
-
-    private void Start()
+    public class ShipBehavior : MonoBehaviour
     {
-        numberOfHits = shipLength;
-    }
+        public int shipLength;
+        private int numberOfHits;
+        public OccupationType type;
 
-    private bool IsSunk()
-    {
-        return shipLength <= 0;
-        //if(shipLength <= 0)
-        //{
-        //    return true;
-        //}
-        //return false;
-    }
-
-    public bool IsHit()
-    {
-        return numberOfHits < shipLength && numberOfHits > 0;
-    }
-
-    public bool TakeDamage()
-    {
-        numberOfHits--;
-        if(IsSunk())
+        private void Start()
         {
-            // Report the ship is sunk to the GameManager
-
-
-            // Meshrenderer unhide the ship
-            GetComponent<MeshRenderer>().enabled = true;
-            return true;
+            numberOfHits = shipLength;
         }
-        return false;
+
+        private bool IsSunk()
+        {
+            return shipLength <= 0;
+            //if(shipLength <= 0)
+            //{
+            //    return true;
+            //}
+            //return false;
+        }
+
+        public bool IsHit()
+        {
+            return numberOfHits < shipLength && numberOfHits > 0;
+        }
+
+        public bool TakeDamage()
+        {
+            numberOfHits--;
+            if (IsSunk())
+            {
+                // Report the ship is sunk to the GameManager
+
+
+                // Meshrenderer unhide the ship
+                GetComponent<MeshRenderer>().enabled = true;
+                return true;
+            }
+            return false;
+        }
+
     }
-     
 }

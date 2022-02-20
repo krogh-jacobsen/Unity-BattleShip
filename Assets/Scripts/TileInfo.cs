@@ -3,64 +3,67 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TileInfo : MonoBehaviour
+namespace NavyBattleGame
 {
-    public int xPosition;
-    public int zPosition;
-
-    bool hasBeenShot;
-
-    public SpriteRenderer sprite;
-    public Sprite[] tileHighLights = new Sprite[4];
-    // 0 = FRAME, 1 = CROSSHAIR, 2 = WATER, 3 = HIT
-
-    // TODO: should we refactor the passing index vs. having an enum to speak to the tiles?
-    public void ActivateHighlight(int index, bool _hasBeenShot)
+    public class TileInfo : MonoBehaviour
     {
-        sprite.sprite = tileHighLights[index];
+        public int xPosition;
+        public int zPosition;
 
-        // Color the sprite
-        if(index == 2)
+        bool hasBeenShot;
+
+        public SpriteRenderer sprite;
+        public Sprite[] tileHighLights = new Sprite[4];
+        // 0 = FRAME, 1 = CROSSHAIR, 2 = WATER, 3 = HIT
+
+        // TODO: should we refactor the passing index vs. having an enum to speak to the tiles?
+        public void ActivateHighlight(int index, bool _hasBeenShot)
         {
-            sprite.color = Color.blue;
-        }
-        // Hit ship (red)
-        if (index == 3)
-        {
-            sprite.color = Color.red;
-        }
+            sprite.sprite = tileHighLights[index];
 
-        hasBeenShot = _hasBeenShot;
-    }
-
-    public void SetTileInfo(int _xPos, int _zPos)
-    {
-        xPosition = _xPos;
-        zPosition = _zPos;
-    }
-
-    public void OnMouseOver()
-    {
-        if(GameManager.instance.gameState == GameManager.GameStates.Shooting)
-        {
-            if(!hasBeenShot)
-            { 
-                ActivateHighlight(1, false);
-            }
-            if(Input.GetMouseButtonDown(0))
+            // Color the sprite
+            if (index == 2)
             {
-                // Game manager to check this coordinate
-                GameManager.instance.CheckShot(xPosition, zPosition, this);
+                sprite.color = Color.blue;
+            }
+            // Hit ship (red)
+            if (index == 3)
+            {
+                sprite.color = Color.red;
+            }
+
+            hasBeenShot = _hasBeenShot;
+        }
+
+        public void SetTileInfo(int _xPos, int _zPos)
+        {
+            xPosition = _xPos;
+            zPosition = _zPos;
+        }
+
+        public void OnMouseOver()
+        {
+            if (GameManager.instance.gameState == GameState.GameStates.Shooting)
+            {
+                if (!hasBeenShot)
+                {
+                    ActivateHighlight(1, false);
+                }
+                if (Input.GetMouseButtonDown(0))
+                {
+                    // Game manager to check this coordinate
+                    GameManager.instance.CheckShot(xPosition, zPosition, this);
+                }
             }
         }
-    }
 
-    void OnMouseExit()
-    {
-        if(!hasBeenShot)
+        void OnMouseExit()
         {
-            ActivateHighlight(0, false);
+            if (!hasBeenShot)
+            {
+                ActivateHighlight(0, false);
+            }
+
         }
-        
     }
 }
